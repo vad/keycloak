@@ -106,10 +106,12 @@ public class GroupResource {
             return ErrorResponse.error("Group name is missing", Response.Status.BAD_REQUEST);
         }
 
-        boolean exists = siblings().filter(s -> !Objects.equals(s.getId(), group.getId()))
-                .anyMatch(s -> Objects.equals(s.getName(), groupName));
-        if (exists) {
-            return ErrorResponse.exists("Sibling group named '" + groupName + "' already exists.");
+        if (group.getName() != groupName) {
+            boolean exists = siblings().filter(s -> !Objects.equals(s.getId(), group.getId()))
+                    .anyMatch(s -> Objects.equals(s.getName(), groupName));
+            if (exists) {
+                return ErrorResponse.exists("Sibling group named '" + groupName + "' already exists.");
+            }
         }
         
         updateGroup(rep, group);
